@@ -96,10 +96,10 @@ function getPasswordOptions() {
       passwordLength: null
     },
     charactersRequirements: {
-      hasLowercase: false,
-      hasUppercase: false,
-      hasNumeric: false,
-      hasSpecialCharacters: false
+      haveLowercaseCharacters: false,
+      haveUppercaseCharacters: false,
+      haveNumericCharacters: false,
+      haveSpecialCharacters: false
     }
   };
 
@@ -122,10 +122,54 @@ function getPasswordOptions() {
     You need to provide a number between 10 and 64 for a password length.
     Please try again!
     `);
+    // return null if user input isn't valid
     return null;
   }
 
   console.log("isInputPwdLengthValid: ", isInputPwdLengthValid);
+
+  // show a series of prompts for character types
+  for (let option in optionsObj.charactersRequirements) {
+    // console.log("option: ", option);
+
+    // add space to separate lowercase character and uppercase character.
+    // 'haveLowercaseCharacters' -> 'have Lowercase Characters'
+    let wordsInString = option.replace(/([A-Z])/g, " $1");
+    // console.log("wordsInString: ", wordsInString);
+
+    // convert all words to lowercase
+    // 'have Lowercase Characters' -> 'have lowercase characters'
+    wordsInString = wordsInString.toLocaleLowerCase();
+    optionsObj.charactersRequirements[option] = confirm(`
+    Do you want to ${wordsInString} in your password?
+    Click 'Okay' button for 'Yes'
+    Click 'Cancel' button for 'No'
+    `);
+  }
+
+  // console.log("optionsObj: ", optionsObj);
+
+  // loop throught the value of properties in optionsObj.charactersRequirements object and
+  // check if it's at least one value is true
+  const isAtLeastOneTypeSelected = Object.values(
+    optionsObj.charactersRequirements
+  ).some((isTypeSelected) => isTypeSelected);
+
+  // console.log("isAtLeastOneTypeSelected: ", isAtLeastOneTypeSelected);
+
+  // if the user doesn't select any character types, inform the user that he/she needs to
+  // select at least one character type
+  if (!isAtLeastOneTypeSelected) {
+    handleError(`
+    Invalid Input!
+    You need to select at least 1 character type to generate a password.
+    Please try again!
+    `);
+    // return null if no character type is selected
+    return null;
+  }
+
+  return optionsObj;
 }
 
 // Function for getting a random element from an array
