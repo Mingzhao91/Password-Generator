@@ -126,7 +126,7 @@ function getPasswordOptions() {
     return null;
   }
 
-  console.log("isInputPwdLengthValid: ", isInputPwdLengthValid);
+  // console.log("isInputPwdLengthValid: ", isInputPwdLengthValid);
 
   // show a series of prompts for character types
   for (let option in optionsObj.charactersRequirements) {
@@ -182,7 +182,69 @@ function getRandom(arr) {
 
 // Function to generate password with user input
 function generatePassword() {
+  // ensure at least 1 character to have in password depending on requirement
+  let leastCharactersToHave = [];
+  // store all characters for password generation
+  let passwordChars = [];
+  // all characters that is used to generate a password from
+  let charactersArr = [];
   const passwordOptions = getPasswordOptions();
+
+  // generate a password only if the user requirements are specified
+  if (passwordOptions) {
+    // if lowercase character is required, we have at least one lowercase character in the password
+    // and add all lowercase characters in to charactersArr that is used to generate a password from
+    if (passwordOptions.charactersRequirements.haveLowercaseCharacters) {
+      leastCharactersToHave.push(getRandom(lowerCasedCharacters));
+      // using spread operactor to support immutability
+      charactersArr = [...charactersArr, ...lowerCasedCharacters];
+    }
+    // if uppercase character is required, we have at least one uppercase character in the password
+    // add all uppercase characters in to charactersArr that is used to generate a password from
+    if (passwordOptions.charactersRequirements.haveUppercaseCharacters) {
+      leastCharactersToHave.push(getRandom(upperCasedCharacters));
+      charactersArr = [...charactersArr, ...upperCasedCharacters];
+    }
+    // if numeric character is required, we have at least one numeric character in the password
+    // add all numeric characters in to charactersArr that is used to generate a password from
+    if (passwordOptions.charactersRequirements.haveNumericCharacters) {
+      leastCharactersToHave.push(getRandom(numericCharacters));
+      charactersArr = [...charactersArr, ...numericCharacters];
+    }
+    // if special character is required, we have at least one special character in the password
+    // add all special characters in to charactersArr that is used to generate a password from
+    if (passwordOptions.charactersRequirements.haveSpecialCharacters) {
+      leastCharactersToHave.push(getRandom(specialCharacters));
+      charactersArr = [...charactersArr, ...specialCharacters];
+    }
+
+    // get the remaining number of characters that we need to generate a password
+    const remainingNumOfChars =
+      passwordOptions.lengthRequirement.passwordLength -
+      leastCharactersToHave.length;
+    // console.log("passwordChars: ", passwordChars);
+    // console.log("charactersArr: ", charactersArr);
+    // console.log("remainingNumOfChars: ", remainingNumOfChars);
+
+    // randomly select characters for the remainings
+    for (let i = 0; i < remainingNumOfChars; i++) {
+      passwordChars.push(getRandom(charactersArr));
+    }
+
+    // randomly insert characters back to passwordChars from leastCharactersToHave array
+    for (let i = 0; i < leastCharactersToHave.length; i++) {
+      const randomPosition = Math.floor(Math.random() * passwordChars.length);
+      passwordChars.splice(randomPosition, 0, leastCharactersToHave[i]);
+    }
+
+    // console.log("passwordChars: ", passwordChars);
+    // console.log("passwordChars.length: ", passwordChars.length);
+  }
+
+  // show password in an alert
+  if (passwordChars.length > 0) alert(`${passwordChars.join("")}`);
+
+  return passwordChars.join("");
 }
 
 // Get references to the #generate element
