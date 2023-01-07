@@ -29,7 +29,7 @@ If user doesn't give a valid answer to specify how many characters are needed fo
 ![Invalid Password Length](./assets/screenshots/error-characters-length.png)
 <br/>
 
-After specifying the number of characters for a new password, a serious of alerts will prompts to ask user what character types are needed for generating a password.
+After specifying the number of characters for a new password, a series of alerts will be prompted to ask user what character types are needed for generating a password.
 ![Character Types Request](./assets/screenshots/character-types-request.png)
 <br/>
 
